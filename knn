@@ -1,0 +1,52 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. Memuat dataset
+data = pd.read_csv('D:\\smt5\\penambangan data\\tugas5\\Social_Network_Ads.csv')
+
+# 2. Memeriksa kolom yang ada
+print(data.columns)
+
+# 3. Mengonversi kolom kategorikal ke numerik (misalnya, kolom 'Gender')
+# Menggunakan pd.get_dummies untuk melakukan one-hot encoding pada kolom kategorikal
+data = pd.get_dummies(data, drop_first=True)
+
+# 4. Memisahkan fitur dan target (misalnya, kolom target adalah 'Purchased')
+X = data.drop('Purchased', axis=1)
+y = data['Purchased']
+
+# 5. Membagi dataset menjadi training dan testing set
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 6. Normalisasi fitur
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# 7. Membuat model KNN
+knn = KNeighborsClassifier(n_neighbors=5)
+
+# 8. Melatih model
+knn.fit(X_train, y_train)
+
+# 9. Melakukan prediksi
+y_pred = knn.predict(X_test)
+
+# 10. Menilai model
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test, y_pred))
+
+# 11. Visualisasi hasil
+conf_mat = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_mat, annot=True, fmt='d', cmap='Blues')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.title('Confusion Matrix')
+plt.show()
