@@ -1,0 +1,45 @@
+# Import libraries
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+import matplotlib.pyplot as plt
+
+# Define the dataset
+data = {
+    'Outlook': ['Sunny', 'Sunny', 'Cloudy', 'Rainy', 'Rainy', 'Rainy', 'Cloudy', 'Sunny', 'Sunny', 'Rainy', 'Sunny', 'Cloudy', 'Cloudy', 'Rainy'],
+    'Temperature': ['Hot', 'Hot', 'Hot', 'Mild', 'Cool', 'Cool', 'Cool', 'Mild', 'Cool', 'Mild', 'Mild', 'Mild', 'Hot', 'Mild'],
+    'Humidity': ['High', 'High', 'High', 'High', 'Normal', 'Normal', 'Normal', 'High', 'Normal', 'Normal', 'Normal', 'High', 'Normal', 'High'],
+    'Windy': ['No', 'Yes', 'No', 'No', 'No', 'Yes', 'Yes', 'No', 'No', 'No', 'Yes', 'Yes', 'No', 'Yes'],
+    'Play': ['Don\'t Play', 'Don\'t Play', 'Play', 'Play', 'Play', 'Don\'t Play', 'Play', 'Don\'t Play', 'Play', 'Play', 'Play', 'Play', 'Play', 'Don\'t Play']
+}
+
+# Convert the dataset into a DataFrame
+df = pd.DataFrame(data)
+
+# Convert categorical data into numerical labels
+df['Outlook'] = df['Outlook'].map({'Sunny': 0, 'Cloudy': 1, 'Rainy': 2})
+df['Temperature'] = df['Temperature'].map({'Hot': 0, 'Mild': 1, 'Cool': 2})
+df['Humidity'] = df['Humidity'].map({'High': 0, 'Normal': 1})
+df['Windy'] = df['Windy'].map({'No': 0, 'Yes': 1})
+df['Play'] = df['Play'].map({'Don\'t Play': 0, 'Play': 1})
+
+# Display the dataframe
+print("Dataset:")
+print(df)
+
+# Split features and target
+X = df[['Outlook', 'Temperature', 'Humidity', 'Windy']]
+y = df['Play']
+
+# Create the Decision Tree model
+model = DecisionTreeClassifier(criterion='entropy')  # Use entropy to calculate information gain
+model.fit(X, y)
+
+# Plot the Decision Tree
+plt.figure(figsize=(10, 8))
+tree.plot_tree(model, feature_names=['Outlook', 'Temperature', 'Humidity', 'Windy'], class_names=['Don\'t Play', 'Play'], filled=True)
+plt.show()
+
+# Make predictions
+prediction = model.predict([[0, 0, 0, 0]])  # Example: Sunny, Hot, High, No
+print(f"Prediction for [Sunny, Hot, High, No]: {'Play' if prediction[0] == 1 else 'Don\'t Play'}")
